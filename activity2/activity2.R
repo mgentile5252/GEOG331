@@ -87,3 +87,33 @@ fact_example
 class(fact_example)
 
 
+##### Descriptive Statistics and Histograms ######
+
+
+
+#find out all unique site names
+levels(datW$NAME)
+
+#look at the mean maximum temperature for Aberdeen
+mean(datW$TMAX[datW$NAME == "ABERDEEN, WA US"])
+
+#use na.rm = True argument to remove NA
+mean(datW$TMAX[datW$NAME == "ABERDEEN, WA US"], na.rm= TRUE)
+
+#calculate the average daily temperature
+#This temperature will be halfway between the minimum and maximum temperature
+datW$TAVE <- datW$TMIN + ((datW$TMAX-datW$TMIN)/2)
+
+
+
+
+#more efficient method
+#get mean across all sites with aggregate function
+#specify mean as the fun argument so takes average
+
+averageTemp <- aggregate(datW$TAVE, by=list(datW$NAME), FUN="mean",na.rm=TRUE)
+averageTemp
+
+
+
+
