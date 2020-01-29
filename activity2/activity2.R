@@ -1,5 +1,6 @@
 #create file in class
 
+####### WORKING WITH DATA ####### 
 
 #make a vector of tree heights in meters
 heights <- c(30,41,20,22)
@@ -29,15 +30,60 @@ Mat.bycol
 
 #explore subsetting matrix by [row, column]
 
-Mat.bycol[1,2] #
+#value in first row, second column
+Mat.bycol[1,2] 
+
+#all values in row 1
+Mat.bycol[1,]
+
+#all values in column 2
+Mat.bycol[,2]
 
 
 
+####### DATAFRAMES ####### 
+
+#Follow instructions in activity 2 to copy data folder to student folder
+
+
+#read in weather station file from the data folder
+datW <- read.csv("y:\\Students\\mgentile\\a02\\2011124.csv")
 
 
 
+#get more information about the dataframe
+?str #Compactly Display the Structure of an Arbitrary R Object
+str(datW)
+
+nrow(datW) #157849 rows
+ncol(datW) #9 columns
 
 
+#create a column with a proper date format
+#note the format here dataframe$column (datW$newcolumn)
+datW$dateF <- as.Date(datW$DATE, "%Y-%m-%d")
 
+ncol(datW) #now has 10 columns
+
+#create antother column that holds the year as a numeric value
+datW$year <- as.numeric(format(datW$dateF,"%Y")) 
+
+
+#QUESTION 2 ExAMPLE DATA TYPES
+char_example <- c("hello", "my", "name", "is", "Matt Gentile", "1")
+char_example
+class(char_example)
+
+num_example <- c(3.2,3,4.2,6,8.921)
+num_example
+class(num_example)
+
+int_example <- as.integer(c(1,2,3,4,5,6))
+int_example
+class(int_example)
+
+fact_example <- factor(c("nice","mean","angry","nice","mean","angry"))
+fact_example
+class(fact_example)
 
 
