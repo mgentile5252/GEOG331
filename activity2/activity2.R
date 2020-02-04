@@ -434,21 +434,70 @@ points(x.plot5,
        lty = 2)
 
 
+# P NORM --- gives probability of inputted value or less
+help(pnorm)
+
+#pnorm(value to evaluate at (note this will evaluate for all values and below),mean, standard deviation)
+pnorm(0,
+      mean(datW$TAVE[datW$siteN == 1],na.rm=TRUE),
+      sd(datW$TAVE[datW$siteN == 1],na.rm=TRUE))
+
+
+#pnrom with 5 gives me all probability (area of the curve) below 5 
+pnorm(5,
+      mean(datW$TAVE[datW$siteN == 1],na.rm=TRUE),
+      sd(datW$TAVE[datW$siteN == 1],na.rm=TRUE))
+
+
+#pnrom with 5 gives me all probability (area of the curve) below 5 above 0
+pnorm(5,
+      mean(datW$TAVE[datW$siteN == 1],na.rm=TRUE),
+      sd(datW$TAVE[datW$siteN == 1],na.rm=TRUE))- pnorm(0,
+                                                        mean(datW$TAVE[datW$siteN == 1],na.rm=TRUE),
+                                                        sd(datW$TAVE[datW$siteN == 1],na.rm=TRUE))
+
+#pnrom of 20 gives me all probability (area of the curve) below 20 
+#subtracting from one leaves me with the area above 20
+1 - pnorm(20,
+          mean(datW$TAVE[datW$siteN == 1],na.rm=TRUE),
+          sd(datW$TAVE[datW$siteN == 1],na.rm=TRUE))
+
+# q norm --- gives value associated with inputted probability
+
+qnorm(0.95,
+      mean(datW$TAVE[datW$siteN == 1],na.rm=TRUE),
+      sd(datW$TAVE[datW$siteN == 1],na.rm=TRUE))
 
 
 
+# CODE FOR QUESTION 6
+
+new_aberdeen <- mean(datW$TAVE[datW$siteN == 1],na.rm=TRUE) + 4
+sd_aberdeen <- sd(datW$TAVE[datW$siteN == 1],na.rm=TRUE)
+
+qnorm(.95,
+      new_aberdeen,
+      sd_aberdeeen)
+
+# 22.51026 --- threshold for unusually high temp
+
+qnorm(.05,
+      new_aberdeen,
+      sd_aberdeeen)
+
+#  6.354275 --- threshold for unusually low temp
 
 
+old_thres <- qnorm(0.95,
+                   mean(datW$TAVE[datW$siteN == 1],na.rm=TRUE),
+                   sd(datW$TAVE[datW$siteN == 1],na.rm=TRUE))
 
+# find probability 
+pnorm(old_thres,
+      new_aberdeen,
+      sd_aberdeen)
 
-
-
-
-
-
-
-
-
+# 0.7968344
 
 
 
