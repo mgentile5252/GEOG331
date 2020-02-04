@@ -141,7 +141,9 @@ hist(datW$TAVE[datW$siteN == 1],
 
 # create same histogram with veritcal lines for mean and vertical dashed lines for 1 sd away 
 
+# add line of code so the next 4 histograms will appear in same window
 
+par(mfrow=c(2,2))
 
 hist(datW$TAVE[datW$siteN == 1],
      freq=FALSE, 
@@ -265,6 +267,186 @@ abline(v = mean(datW$TAVE[datW$siteN == 5],na.rm=TRUE) + sd(datW$TAVE[datW$siteN
        col = "tomato3", 
        lty = 3,
        lwd = 3)
+
+
+# PROBABILITY DISTRIBUTIONS
+
+#NAME HISTOGRAM FROM SITE 1 FOR LATER REFERENCE
+
+# reset figure window
+par(mfrow=c(1,1))
+
+h1 <- hist(datW$TAVE[datW$siteN == 1],
+           freq=FALSE, 
+           main = paste(levels(datW$NAME)[1]),
+           xlab = "Average daily temperature (degrees C)", 
+           ylab="Relative frequency",
+           col="grey50",
+           border="white")
+
+
+
+#the seq() func generates a sequence of numbers that we can use to plot the normal across the range of temperature values
+x.plot <- seq(-10,30, length.out = 100)
+
+#the dnorm function will produce the probability density based on a mean and standard deviation.
+
+y.plot <-  dnorm(seq(-10,30, length.out = 100),
+                 mean(datW$TAVE[datW$siteN == 1],na.rm=TRUE),
+                 sd(datW$TAVE[datW$siteN == 1],na.rm=TRUE))
+
+
+# create a density that is scaled to fit in the plot  since the density has a different range from the data density.
+# helpful for putting multiple things on the same plot
+# the maximum value of the plot is always the same between the two datasets on the plot. Here both plots share zero as a minimum.
+y.scaled <- (max(h1$density)/max(y.plot)) * y.plot
+
+
+
+#points function adds points or lines to a graph  
+#the first two arguements are the x coordinates and the y coordinates.
+
+points(x.plot,
+       y.scaled, 
+       type = "l", 
+       col = "royalblue3",
+       lwd = 4, 
+       lty = 2)
+
+
+
+#normally distributed for site 1, check other 4 sites for Question 5
+
+#site 2 - green
+
+h2 <- hist(datW$TAVE[datW$siteN == 2],
+           freq=FALSE, 
+           main = paste(levels(datW$NAME)[2]),
+           xlab = "Average daily temperature (degrees C)", 
+           ylab="Relative frequency",
+           col="grey50",
+           border="white")
+
+x.plot2 <- seq(-10,30, length.out = 100)
+
+
+y.plot2 <-  dnorm(seq(-10,30, length.out = 100),
+                 mean(datW$TAVE[datW$siteN == 2],na.rm=TRUE),
+                 sd(datW$TAVE[datW$siteN == 2],na.rm=TRUE))
+
+y.scaled2 <- (max(h2$density)/max(y.plot2)) * y.plot2
+
+
+
+points(x.plot2,
+       y.scaled2, 
+       type = "l", 
+       col = "green",
+       lwd = 4, 
+       lty = 2)
+
+
+#site 3 - green
+
+h3 <- hist(datW$TAVE[datW$siteN == 3],
+           freq=FALSE, 
+           main = paste(levels(datW$NAME)[3]),
+           xlab = "Average daily temperature (degrees C)", 
+           ylab="Relative frequency",
+           col="grey50",
+           border="white")
+
+x.plot3 <- seq(-30,30, length.out = 300)
+
+
+y.plot3 <-  dnorm(seq(-30,30, length.out = 300),
+                  mean(datW$TAVE[datW$siteN == 3],na.rm=TRUE),
+                  sd(datW$TAVE[datW$siteN == 3],na.rm=TRUE))
+
+y.scaled3 <- (max(h3$density)/max(y.plot3)) * y.plot3
+
+
+
+points(x.plot3,
+       y.scaled3, 
+       type = "l", 
+       col = "green",
+       lwd = 4, 
+       lty = 2)
+
+
+
+#site 4 - green
+
+h4 <- hist(datW$TAVE[datW$siteN == 4],
+           freq=FALSE, 
+           main = paste(levels(datW$NAME)[4]),
+           xlab = "Average daily temperature (degrees C)", 
+           ylab="Relative frequency",
+           col="grey50",
+           border="white")
+
+x.plot4 <- seq(-30,45, length.out = 400)
+
+
+y.plot4 <-  dnorm(seq(-30,45, length.out = 400),
+                  mean(datW$TAVE[datW$siteN == 4],na.rm=TRUE),
+                  sd(datW$TAVE[datW$siteN == 4],na.rm=TRUE))
+
+y.scaled4 <- (max(h4$density)/max(y.plot4)) * y.plot4
+
+
+
+points(x.plot4,
+       y.scaled4, 
+       type = "l", 
+       col = "green",
+       lwd = 4, 
+       lty = 2)
+
+
+#site 5 - green
+
+h5 <- hist(datW$TAVE[datW$siteN == 5],
+           freq=FALSE, 
+           main = paste(levels(datW$NAME)[5]),
+           xlab = "Average daily temperature (degrees C)", 
+           ylab="Relative frequency",
+           col="grey50",
+           border="white")
+
+x.plot5 <- seq(-30,30, length.out = 400)
+
+
+y.plot5 <-  dnorm(seq(-30,30, length.out = 400),
+                  mean(datW$TAVE[datW$siteN == 5],na.rm=TRUE),
+                  sd(datW$TAVE[datW$siteN == 5],na.rm=TRUE))
+
+y.scaled5 <- (max(h5$density)/max(y.plot5)) * y.plot5
+
+
+
+points(x.plot5,
+       y.scaled5, 
+       type = "l", 
+       col = "green",
+       lwd = 4, 
+       lty = 2)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
