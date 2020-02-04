@@ -114,6 +114,20 @@ datW$TAVE <- datW$TMIN + ((datW$TMAX-datW$TMIN)/2)
 averageTemp <- aggregate(datW$TAVE, by=list(datW$NAME), FUN="mean",na.rm=TRUE)
 averageTemp
 
+# change the automatic output of column names from group.1, x to be more meaningful
+# MAAT is a common abbreviation for Mean Annual Air Temperature
+colnames(averageTemp) <- c("NAME","MAAT")
+averageTemp
+
+#convert site name level to numeric value so it can be referenced later
+datW$NAME
+datW$siteN <- as.numeric(datW$NAME) 
+datW$siteN
+
+
+
+
+
 
 
 
