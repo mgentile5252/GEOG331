@@ -477,27 +477,102 @@ sd_aberdeen <- sd(datW$TAVE[datW$siteN == 1],na.rm=TRUE)
 
 qnorm(.95,
       new_aberdeen,
-      sd_aberdeeen)
+      sd_aberdeen)
 
-# 22.51026 --- threshold for unusually high temp
+# 22.51026 --- new threshold for unusually high temp
 
+
+# practicing finding lower end extreme
 qnorm(.05,
       new_aberdeen,
-      sd_aberdeeen)
+      sd_aberdeen)
 
 #  6.354275 --- threshold for unusually low temp
 
+
+#find old threshold for extreme warm weather
 
 old_thres <- qnorm(0.95,
                    mean(datW$TAVE[datW$siteN == 1],na.rm=TRUE),
                    sd(datW$TAVE[datW$siteN == 1],na.rm=TRUE))
 
-# find probability 
+
+# find probability of with previos threshold, new mean, same standard deviation
 pnorm(old_thres,
       new_aberdeen,
       sd_aberdeen)
 
 # 0.7968344
+
+
+
+
+
+
+
+# QUESTION 7
+datW$PRCP #column name for precipitation numbers
+
+h1_precip <- hist(datW$PRCP[datW$siteN == 1],
+           freq=FALSE, 
+           main = paste(levels(datW$NAME)[1]),
+           xlab = "Daily Precipitation", 
+           ylab="Relative frequency",
+           col="grey50",
+           border="white")
+
+
+
+
+
+
+
+# QUESTION 8
+help(sum)
+
+#SITE 1
+
+
+#Original thought --- much more efficient method then realized. No longer have to do individual year summations
+
+#site1_precip_1930 <- datW$PRCP[datW$siteN == 1 & datW$year == 1930]
+#site1_precip_1930_sum <- sum(site1_precip_1930, na.rm = TRUE)
+#site1_precip_1930_sum #1757.6
+
+
+
+
+s1_precip <- aggregate(datW[datW$siteN == 1,]$PRCP, by=list(datW[datW$siteN == 1,]$year), FUN="sum",na.rm=TRUE)
+s1_precip
+
+colnames(s1_precip) <- c("Year","PRCP")
+s1_precip
+
+
+
+
+#SITE 2
+
+s2_precip <- aggregate(datW[datW$siteN == 2,]$PRCP, by=list(datW[datW$siteN == 2,]$year), FUN="sum",na.rm=TRUE)
+s2_precip
+
+colnames(s2_precip) <- c("Year","PRCP")
+s2_precip
+
+
+
+
+#SITE 3
+
+s3_precip <- aggregate(datW[datW$siteN == 3,]$PRCP, by=list(datW[datW$siteN == 3,]$year), FUN="sum",na.rm=TRUE)
+s3_precip
+
+colnames(s3_precip) <- c("Year","PRCP")
+s3_precip
+
+
+
+hist(s3_precip$PRCP, col = "red", main = "Mandan Annual Precipitation", xlab = "Annual Precipitaiton")
 
 
 
