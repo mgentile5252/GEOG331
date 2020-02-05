@@ -572,13 +572,37 @@ s3_precip
 
 
 
+
+
+
+#SITE 4
+
+s4_precip <- aggregate(datW[datW$siteN == 4,]$PRCP, by=list(datW[datW$siteN == 4,]$year), FUN="sum",na.rm=TRUE)
+s4_precip
+
+colnames(s4_precip) <- c("Year","PRCP")
+s4_precip
+
+
+
+
+
+
+#SITE 5
+
+s5_precip <- aggregate(datW[datW$siteN == 5,]$PRCP, by=list(datW[datW$siteN == 5,]$year), FUN="sum",na.rm=TRUE)
+s5_precip
+
+colnames(s5_precip) <- c("Year","PRCP")
+s5_precip
+
+
+
+
+
+#histogram for site 3
+
 hist(s3_precip$PRCP, col = "red", main = "Mandan Annual Precipitation", xlab = "Annual Precipitaiton")
-
-
-
-
-
-
 
 
 
