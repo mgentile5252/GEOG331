@@ -608,10 +608,39 @@ hist(s3_precip$PRCP, col = "red", main = "Mandan Annual Precipitation", xlab = "
 
 
 
+# QUESTION 9
+s1_mean_precip <- mean(s1_precip$PRCP)
+s1_mean_precip #2107.077
+
+
+s2_mean_precip <- mean(s2_precip$PRCP)
+s2_mean_precip #358.3578
 
 
 
+s3_mean_precip <- mean(s3_precip$PRCP)
+s3_mean_precip #415.7189
 
 
 
+s4_mean_precip <- mean(s4_precip$PRCP)
+s4_mean_precip #312.66
+
+
+
+s5_mean_precip <- mean(s5_precip$PRCP)
+s5_mean_precip #1001.891
+
+avg_precip_vec <- c(s1_mean_precip,s2_mean_precip,s3_mean_precip,s4_mean_precip,s5_mean_precip)
+
+averageTemp2 <- aggregate(datW$TAVE, by=list(datW$siteN), FUN="mean",na.rm=TRUE)
+
+
+# change the automatic output of column names from group.1, x to be more meaningful
+# MAAT is a common abbreviation for Mean Annual Air Temperature
+colnames(averageTemp2) <- c("Site #","MAAT")
+averageTemp2$prcp <- avg_precip_vec
+
+
+averageTemp2
 
