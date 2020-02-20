@@ -298,6 +298,10 @@ plot(dat_before$doy, dat_before$precipitation, xlab = "Day Of Year", ylab = "Pre
 # total preciptation as well 
 # indicate how many observations in each calc and time period
 
+
+# first must find values to fill table with
+# check to see how many NA values were not used in calculation 
+
 total_precip <- sum(datW$precipitation, na.rm = TRUE)
 #177.828
 length(datW$precipitation)
@@ -337,24 +341,41 @@ length(which(is.na(datW$soil.moisture)))
 #707
 
 
-
+# create vector of the names for table rows
 table_names <- c("Average Air Temp", 
                  "Average Wind Speed", 
                  "Average Soil Temp",
                  "Average Soil Moisture",
                  "Total Precipitation")
 
-values <- c(20.00936, 0.4452637, 17.41777, 0.1445495, 177.828)
+#values <- c(20.00936, 0.4452637, 17.41777, 0.1445495, 177.828)
 
-calcs <- c(2015, 2015, 1411,1411, 2118)
+#calcs <- c(2015, 2015, 1411,1411, 2118)
 
+
+#create matrix -> table
 mat <- matrix(c(20.00936, 0.4452637, 17.41777, 0.1445495, 177.828,2015, 2015, 1411,1411, 2118), ncol = 2)
 rownames(mat) <- table_names
 colnames(mat) <- c("Value", "# of Obs")
 info_table <- as.table(mat)
 
 
+#####################################################################################################################################
 
+
+### QUESTION 9 ###
+
+par(mfrow=c(2,2))
+soil_m_plot <- plot(datW$doy, datW$soil.moisture, xlab = "Day of Year", ylab = "Soil Moisture")
+  
+  
+soil_t_plot <- plot(datW$doy, datW$soil.temp, xlab = "Day of Year", ylab = "Soil Temperature")
+  
+  
+precip_plot <-  plot(datW$doy, datW$precipitation, xlab = "Day of Year", ylab = "Precipitation")
+  
+
+air_temp_plot <- plot(datW$doy, datW$air.tempQ2, xlab = "Day of Year", ylab = "Air Temperature")
 
 
 
