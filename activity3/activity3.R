@@ -145,7 +145,7 @@ datW[datW$air.tempQ1 < 8,]
 datW[datW$air.tempQ1 > 33,]  
 
 
-
+#####################################################################################################################################
 # QUESTION 4
 datW[datW$air.tempQ1 < 8, 1]  
 
@@ -157,7 +157,7 @@ datW[datW$air.tempQ1 > 33,1]
 datW[datW$air.tempQ1 > 33,14]  
 #182 182 182 182 182 182 182 183
 # July 1 amd July 2
-
+#####################################################################################################################################
 
 
 
@@ -182,7 +182,7 @@ points(datW$DD[datW$precipitation > 0], datW$precipitation[datW$precipitation > 
 points(datW$DD[lightscale > 0], lightscale[lightscale > 0],
        col= "tomato3", pch=19)
 
-
+#####################################################################################################################################
 
 ### CODE FOR TEST FOR QUESTION 5 ###
 
@@ -203,6 +203,93 @@ assert(datW$DD[974] %in% datW$DD[lightscale > 0], "error: inputted statement not
 assert(lightscale[967] > 0, "error: inputted statement not true")#error received
 assert(datW$DD[967] %in% datW$DD[lightscale > 0], "error: inputted statement not true" )#error received
 
+#####################################################################################################################################
+
+
+#filter out storms in wind and air temperature measurements
+# filter all values with lightning that coincides with rainfall greater than 2mm or only rainfall over 5 mm.    
+#create a new air temp column
+datW$air.tempQ2 <- ifelse(datW$precipitation  >= 2 & datW$lightning.acvitivy >0, NA,
+                          ifelse(datW$precipitation > 5, NA, datW$air.tempQ1))
+
+
+
+
+#####################################################################################################################################
+
+### QUESTION 6 ###
+
+
+datW$wind.speedQ2 <- ifelse(datW$precipitation  >= 2 & datW$lightning.acvitivy >0, NA,
+                          ifelse(datW$precipitation > 5, NA, datW$wind.speed))
+
+# check to see if NAs were added (ie unreliable data during storms was removed)
+assert(length(which(is.na(datW$wind.speedQ2))) == length(which(is.na(datW$wind.speed))), "error: inputted statement not true")#error received
+
+
+#####################################################################################################################################
+
+
+# Researchers share that in mid-July the weather station was tampered with
+# Unreliable data marked by dramatic changes in soil temperature and moisture 
+# also check that sensor was pulled from ground and unplgged cable at same time
+
+
+
+### QUESTION 7 ###
+
+datW$timestamp[1]
+length(datW$timestamp)
+datW$timestamp[2118]
+
+plot( datW$doy, datW$soil.moisture)
+
+
+# july DOY 182 - 212
+# test period 175 - 215
+dat_july <- datW[datW$doy < 215 & datW$doy > 175,]
+
+
+#look at just july data to get closer idea of when outage occured
+plot(dat_july$doy, dat_july$soil.moisture) #Looks like sensor went out around DOY = 193
+plot(dat_july$doy, dat_july$soil.temp) #Looks like sensor went out around DOY = 193
+
+
+
+#Look at data of 10 days before outage 
+dat_before <- dat_july <- datW[datW$doy < 193 & datW$doy > 185,]
+plot(dat_before$doy, dat_before$soil.moisture, ylab = "Soil Moisture",
+     xlab = "Day of Year", main = "Soil Mosture Recordings Before Outage near July 12") 
+plot(dat_before$doy, dat_before$soil.temp, ylab = "Soil Moisture",
+     xlab = "Day of Year", main = "Soil Mosture Recordings Before Outage near July 12") 
+
+# figure out of mean soil moisture of each day jumped signficantly 
+
+
+mean_soil_moistures <- c()
+mean_soil_temperatures <- c()
+
+for (i in 180:191){
+  day_avg_m <- mean(datW[datW$doy == i,]$soil.moisture,na.rm = TRUE)
+  day_avg_t <- mean(datW[datW$doy == i,]$soil.temp, na.rm = TRUE)
+  
+  mean_soil_moistures[i-179] <- day_avg_m
+  mean_soil_temperatures[i-179] <- day_avg_t
+  
+}
+mean_soil_moistures
+mean_soil_temperatures
+
+
+## explore average temperature for these days and precipitation
+
+
+
+plot(dat_before$doy, dat_before$air.tempQ2, xlab = "Day Of Year", ylab = "Air Temp", main = "Air Temperature")
+plot(dat_before$doy, dat_before$precipitation, xlab = "Day Of Year", ylab = "Precipitation", main = "Preicpiation")
+
+
+#####################################################################################################################################
 
 
 
