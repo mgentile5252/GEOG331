@@ -292,6 +292,72 @@ plot(dat_before$doy, dat_before$precipitation, xlab = "Day Of Year", ylab = "Pre
 #####################################################################################################################################
 
 
+### QUESTION 8 ###
+
+# create table with avg. air temp, wind speed, soil moisture, soil temp
+# total preciptation as well 
+# indicate how many observations in each calc and time period
+
+total_precip <- sum(datW$precipitation, na.rm = TRUE)
+#177.828
+length(datW$precipitation)
+#2118
+length(which(is.na(datW$precipitation)))
+#0
+
+avg_temp <- mean(datW$air.tempQ2, na.rm = TRUE)
+#20.00936
+length(datW$air.tempQ2)
+#2118
+length(which(is.na(datW$air.tempQ2)))
+#13
+
+
+
+avg_wind <- mean(datW$wind.speedQ2, na.rm = TRUE)
+# 0.4452637
+length(datW$wind.speedQ2)
+#2118
+length(which(is.na(datW$wind.speedQ2)))
+#13
+
+
+avg_s_temp <- mean(datW$soil.temp, na.rm = TRUE)
+#17.41777
+length(datW$soil.temp)
+#2118
+length(which(is.na(datW$soil.temp)))
+#707
+
+avg_s_mois <- mean(datW$soil.moisture, na.rm = TRUE)
+#0.1445495
+length(datW$soil.moisture)
+#2118
+length(which(is.na(datW$soil.moisture)))
+#707
+
+
+
+table_names <- c("Average Air Temp", 
+                 "Average Wind Speed", 
+                 "Average Soil Temp",
+                 "Average Soil Moisture",
+                 "Total Precipitation")
+
+values <- c(20.00936, 0.4452637, 17.41777, 0.1445495, 177.828)
+
+calcs <- c(2015, 2015, 1411,1411, 2118)
+
+mat <- matrix(c(20.00936, 0.4452637, 17.41777, 0.1445495, 177.828,2015, 2015, 1411,1411, 2118), ncol = 2)
+rownames(mat) <- table_names
+colnames(mat) <- c("Value", "# of Obs")
+info_table <- as.table(mat)
+
+
+
+
+
+
 
 
 
