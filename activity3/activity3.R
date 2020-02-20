@@ -226,6 +226,10 @@ datW$wind.speedQ2 <- ifelse(datW$precipitation  >= 2 & datW$lightning.acvitivy >
 # check to see if NAs were added (ie unreliable data during storms was removed)
 assert(length(which(is.na(datW$wind.speedQ2))) == length(which(is.na(datW$wind.speed))), "error: inputted statement not true")#error received
 
+par(mfrow = c(1,1))
+plot(datW$doy, datW$wind.speedQ2, type= "o", col = "red", xlab = "Day of Year", ylab = "Wind speed")
+
+
 
 #####################################################################################################################################
 
@@ -265,7 +269,6 @@ plot(dat_before$doy, dat_before$soil.temp, ylab = "Soil Moisture",
 
 # figure out of mean soil moisture of each day jumped signficantly 
 
-
 mean_soil_moistures <- c()
 mean_soil_temperatures <- c()
 
@@ -281,8 +284,7 @@ mean_soil_moistures
 mean_soil_temperatures
 
 
-## explore average temperature for these days and precipitation
-
+## explore average temperature for these days and precipitation to see if gradually drying of soil makes sense
 
 
 plot(dat_before$doy, dat_before$air.tempQ2, xlab = "Day Of Year", ylab = "Air Temp", main = "Air Temperature")
@@ -355,10 +357,16 @@ table_names <- c("Average Air Temp",
 
 #create matrix -> table
 mat <- matrix(c(20.00936, 0.4452637, 17.41777, 0.1445495, 177.828,2015, 2015, 1411,1411, 2118), ncol = 2)
+mat_round <- matrix(c(20.0, 0.6, 17, 0.16, 177,2015, 2015, 1411,1411, 2118), ncol = 2)
+
 rownames(mat) <- table_names
 colnames(mat) <- c("Value", "# of Obs")
 info_table <- as.table(mat)
 
+
+rownames(mat_round) <- table_names
+colnames(mat_round) <- c("Value", "# of Obs")
+info_table2 <- as.table(mat_round)
 
 #####################################################################################################################################
 
