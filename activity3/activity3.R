@@ -158,3 +158,54 @@ datW[datW$air.tempQ1 > 33,14]
 #182 182 182 182 182 182 182 183
 # July 1 amd July 2
 
+
+
+
+### Measurements outside of sensor capabilities ###
+
+
+
+#plot precipitation and lightning strikes on the same plot
+#normalize lighting strikes to match precipitation
+lightscale <- (max(datW$precipitation)/max(datW$lightning.acvitivy)) * datW$lightning.acvitivy
+
+#make the plot with precipitation and lightning activity marked
+#make it empty to start and add in features
+plot(datW$DD , datW$precipitation, xlab = "Day of Year", ylab = "Precipitation & lightning",
+     type="n")
+#plot precipitation points only when there is precipitation 
+#make the points semi-transparent
+points(datW$DD[datW$precipitation > 0], datW$precipitation[datW$precipitation > 0],
+       col= rgb(95/255,158/255,160/255,.5), pch=15)        
+
+#plot lightning points only when there is lightning     
+points(datW$DD[lightscale > 0], lightscale[lightscale > 0],
+       col= "tomato3", pch=19)
+
+
+
+### CODE FOR TEST FOR QUESTION 5 ###
+
+
+# old asset call for syntax
+assert(1 == 2, "error: unequal values")
+
+assert(length(datW$DD) == length(lightscale), "error: inputted statement not true")
+assert(length(datW$DD) != length(lightscale), "error: inputted statement not true") #error received
+
+assert(length(datW$DD[lightscale > 0]) == length(which(lightscale > 0)), "error: inputted statement not true")
+assert(length(datW$DD[lightscale > 0]) != length(which(lightscale > 0)), "error: inputted statement not true")#error received
+
+#check specific values line up
+assert(lightscale[974] > 0, "error: inputted statement not true")
+assert(datW$DD[974] %in% datW$DD[lightscale > 0], "error: inputted statement not true" )
+
+assert(lightscale[967] > 0, "error: inputted statement not true")#error received
+assert(datW$DD[967] %in% datW$DD[lightscale > 0], "error: inputted statement not true" )#error received
+
+
+
+
+
+
+
