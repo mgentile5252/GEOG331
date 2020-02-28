@@ -229,7 +229,44 @@ legend("topright", c("mean","1 standard deviation"), #legend items
 
 ### question 5 code ###
 
+head(datD)
+colnames(datD)
+discharge_2017 <- datD[datD$year == 2017,6]
 
+datD_2017 <- datD[datD$year == 2017,]
+daily_discharge_2017 <- aggregate(datD_2017$discharge, by=list(datD_2017$doy), FUN="mean")
+
+dev.new(width=8,height=8)
+#bigger margins
+par(mai=c(1,1,1,1))
+plot(aveF$doy,aveF$dailyAve, 
+     type="l", 
+     xlab="Time", 
+     ylab=expression(paste("Discharge ft"^"3 ","sec"^"-1")),
+     lwd=2,
+     ylim=c(0,90),
+     xaxs="i", yaxs ="i",#remove gaps from axes
+     axes=FALSE)#no axes
+polygon(c(aveF$doy, rev(aveF$doy)),#x coordinates
+        c(aveF$dailyAve-sdF$dailySD,rev(aveF$dailyAve+sdF$dailySD)),#ycoord
+        col=rgb(0.392, 0.584, 0.929,.2), #color that is semi-transparent
+        border=NA#no border
+)       
+lines(daily_discharge_2017$x, col = "red")
+#######################################################
+
+#month_strings <- c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov","Dec")
+#axis(1, at = 1 seq(0,11, by=1), #tick intervals
+    # lab=month_strings) #tick labels
+#######################################################
+axis(2, seq(0,80, by=20),
+     seq(0,80, by=20),
+     las = 2)#show ticks at 90 degree angle
+legend("topright", c("mean","1 standard deviation", "2017 Observations"), #legend items
+       lwd=c(2,NA),#lines
+       col=c("black",rgb(0.392, 0.584, 0.929,.2), "red"),#colors
+       pch=c(NA,15),#symbols
+       bty="n")#no legend border
 
 
 
