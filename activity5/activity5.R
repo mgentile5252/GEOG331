@@ -269,10 +269,39 @@ legend("topright", c("mean","1 standard deviation", "2017 Observations"), #legen
        bty="n")#no legend border
 
 
+###################
 
 
 
+### Question 7 code ###
 
+#head(datD)
+head(datP)
+datP[1:16, ]
+
+class(datP$doy)
+full_data_doy <- c()
+full_data_year <- c()
+
+consec_count = 0
+for (i in 1:length(datP$doy)-1)
+  {
+  
+  
+  if (datP$doy[i] == datP$doy[i+1]){
+    consec_count = consec_count + 1
+    
+      if (consec_count == 23){
+        append(full_data_doy, values =paste(datP$doy[i], ",",datP$year[i]))
+      }
+  }
+  else{
+    consec_count = 0
+  }
+  
+}
+
+full_precip <- datP[]
 
 
 
