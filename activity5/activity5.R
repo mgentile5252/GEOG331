@@ -57,9 +57,9 @@ datP$year <- year(dateP)
 datD$hour <- hour(timesD) + (minute(timesD)/60)
 #get full decimal time
 datD$decDay <- datD$doy + (datD$hour/24)
-#calculate a decimal year, but account for leap year
-datD$decYear <- ifelse(leap_year(datD$year),datD$year + (datD$decDay/366),
-                       datD$year + (datD$decDay/365))
+#calculate a decimal year, but account for leap year year + (doy-1)/365
+datD$decYear <- ifelse(leap_year(datD$year),datD$year + ((datD$doy - 1) /366),
+                       datD$year + ((datD$doy - 1) /365))
 #calculate times for datP                       
 datP$hour <- hour(dateP ) + (minute(dateP )/60)
 #get full decimal time
@@ -269,41 +269,15 @@ legend("topright", c("mean","1 standard deviation", "2017 Observations"), #legen
        bty="n")#no legend border
 
 
-###################
+
+
+#################################################################################################################################
 
 
 
 ### Question 7 code ###
 
-#head(datD)
-# head(datP)
-# datP[1:16, ]
-# 
-# class(datP$doy)
-# full_data_doy <- c()
-# full_data_year <- c()
-# 
-# consec_count = 0
-# for (i in 1:length(datP$doy)-1)
-#   {
-#   
-#   
-#   if (datP$doy[i] == datP$doy[i+1]){
-#     consec_count = consec_count + 1
-#     
-#       if (consec_count == 23){
-#         append(full_data_doy, values =paste(datP$doy[i], ",",datP$year[i]))
-#       }
-#   }
-#   else{
-#     consec_count = 0
-#   }
-#   
-# }
-# 
-# full_precip <- datP[]
 
-head(datP)
 
 #find length of each column of datP. Look for days of year and year where there are full 24 hours of data collected. 
 
@@ -325,8 +299,41 @@ datP$doy_year <- paste(datP$doy, "_",datP$year)
 
 #index to get rows of datP where doy_year is seen in the full_days_df value
 datP_full_days_df <- datP[datP$doy_year %in% full_days_df$doy_year, ]
-
 #datP_full_days_df is dataframe of all columns of datP with only days with all 24 hours of data. 
+
+
+#make plot of all discharge measurements and mark which ones come from days of full data
+
+#create doy_year for later comparison to track which data comes from days with complete precip data collection
+datD$doy_year <- paste(datD$doy,"_",datD$year)
+datD_aggregate_by_doy_year <- aggregate(datD$discharge, by= list(datD$doy_year, datD$decYear), FUN = median)
+colnames(datD_aggregate_by_doy_year) <- c("doy_year", "dec_year", "median_discharge")
+
+
+
+# start plot in new plot window
+dev.new(width=8,height=8)
+#bigger margins
+par(mai=c(1,1,1,1))
+   
+plot(datD_aggregate_by_doy_year$dec_year,datD_aggregate_by_doy_year$median_discharge,
+     type = "l",
+     xlab = "Year",
+     ylab = "Daily Median Discharge",
+     main = "Question 7 Plot")
+
+#create dataframe of plot info for only days where full precipitation data was collected
+datP[datP$doy_year %in% full_days_df$doy_year, ]
+full_precip_discharge <- datD_aggregate_by_doy_year[ datD_aggregate_by_doy_year$doy_year %in% full_days_df$doy_year, ]
+colnames(full_precip_discharge) <- c("doy_year", "dec_year", "median_discharge")
+
+#overlay red points to indicate the data that came from complete precipiptation data days
+points(full_precip_discharge$dec_year, full_precip_discharge$median_discharge, col = "red")
+legend("topright", c("Median Discharge","Value from day of full precipitation recording"), #legend items
+       lwd=c(2,NA),#lines
+       col=c("black","red"),#colors
+       pch=c(NA,1),#symbols
+       bty="n")#no legend border
 
 
 
