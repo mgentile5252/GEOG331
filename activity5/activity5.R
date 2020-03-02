@@ -276,41 +276,57 @@ legend("topright", c("mean","1 standard deviation", "2017 Observations"), #legen
 ### Question 7 code ###
 
 #head(datD)
+# head(datP)
+# datP[1:16, ]
+# 
+# class(datP$doy)
+# full_data_doy <- c()
+# full_data_year <- c()
+# 
+# consec_count = 0
+# for (i in 1:length(datP$doy)-1)
+#   {
+#   
+#   
+#   if (datP$doy[i] == datP$doy[i+1]){
+#     consec_count = consec_count + 1
+#     
+#       if (consec_count == 23){
+#         append(full_data_doy, values =paste(datP$doy[i], ",",datP$year[i]))
+#       }
+#   }
+#   else{
+#     consec_count = 0
+#   }
+#   
+# }
+# 
+# full_precip <- datP[]
+
 head(datP)
-datP[1:16, ]
 
-class(datP$doy)
-full_data_doy <- c()
-full_data_year <- c()
+#find length of each column of datP. Look for days of year and year where there are full 24 hours of data collected. 
 
-consec_count = 0
-for (i in 1:length(datP$doy)-1)
-  {
-  
-  
-  if (datP$doy[i] == datP$doy[i+1]){
-    consec_count = consec_count + 1
-    
-      if (consec_count == 23){
-        append(full_data_doy, values =paste(datP$doy[i], ",",datP$year[i]))
-      }
-  }
-  else{
-    consec_count = 0
-  }
-  
-}
+agg_datP <- aggregate(datP, by = list(datP$doy,datP$year), length) 
+#rename firs two columns for clarity
+colnames(agg_datP) <- c("agg_doy", "agg_year", "STATION","STATION_NAME", "DATE" ,"HPCP","doy","year","hour","decDay","decYear")   
+agg_datP
+#only keep days where there are 24 hours of data collected
+agg_datP_full <- agg_datP[agg_datP$doy ==24, ]
+agg_datP_full
 
-full_precip <- datP[]
+#create new dataframe with day of year, year, and then add third column with doy_year (will help with later indexing)
+full_days_df <- data.frame(agg_datP_full$agg_doy, agg_datP_full$agg_year)
+colnames(full_days_df) <- c("doy", "year")
+full_days_df$doy_year <- paste(full_days_df$doy, "_",full_days_df$year)
 
 
+datP$doy_year <- paste(datP$doy, "_",datP$year)
 
+#index to get rows of datP where doy_year is seen in the full_days_df value
+datP_full_days_df <- datP[datP$doy_year %in% full_days_df$doy_year, ]
 
-
-
-
-
-
+#datP_full_days_df is dataframe of all columns of datP with only days with all 24 hours of data. 
 
 
 
