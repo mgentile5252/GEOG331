@@ -77,6 +77,12 @@ plot(datD$decYear, datD$discharge, type="l", xlab="Year", ylab=expression(paste(
 
 
 
+
+#################################################################################################################################
+
+
+
+
 # question 3 code #
 
 nrow(datD) #393798
@@ -90,7 +96,13 @@ head(datP)
 datP[1:10,]
 datP$DATE[1] #20070101
 datP$DATE[16150] #20131231
-#################
+
+
+
+
+
+#################################################################################################################################
+
 
 
 # question 4 code #
@@ -100,7 +112,13 @@ help(expression)
 help(paste)
 
 
-#################
+
+
+
+#################################################################################################################################
+
+
+
 
 
 #basic formatting
@@ -227,6 +245,12 @@ legend("topright", c("mean","1 standard deviation"), #legend items
        bty="n")#no legend border
 
 
+
+
+#################################################################################################################################
+
+
+
 ### question 5 code ###
 
 head(datD)
@@ -319,7 +343,7 @@ par(mai=c(1,1,1,1))
 plot(datD_aggregate_by_doy_year$dec_year,datD_aggregate_by_doy_year$median_discharge,
      type = "l",
      xlab = "Year",
-     ylab = "Daily Median Discharge",
+     ylab = expression(paste("Median Daily Discharge ft"^"3 ","sec"^"-1")),
      main = "Question 7 Plot")
 
 #create dataframe of plot info for only days where full precipitation data was collected
@@ -334,6 +358,163 @@ legend("topright", c("Median Discharge","Value from day of full precipitation re
        col=c("black","red"),#colors
        pch=c(NA,1),#symbols
        bty="n")#no legend border
+
+
+
+
+#################################################################################################################################
+
+
+
+
+#Making a hydrograph
+
+
+
+#focus on September 5-6, 2011
+
+#subsest discharge and precipitation within range of interest (9/5-9/6)
+hydroD <- datD[datD$doy >= 248 & datD$doy < 250 & datD$year == 2011,]
+hydroP <- datP[datP$doy >= 248 & datP$doy < 250 & datP$year == 2011,]
+
+
+
+#min value of flow of stream
+min(hydroD$discharge) #4.29
+
+
+#create scaled precipitation values for the period
+
+#get minimum and maximum range of discharge to plot
+#go outside of the range so that it's easy to see high/low values
+#floor rounds down the integer
+yl <- floor(min(hydroD$discharge))-1
+#celing rounds up to the integer
+yh <- ceiling(max(hydroD$discharge))+1
+#minimum and maximum range of precipitation to plot
+pl <- 0
+pm <-  ceiling(max(hydroP$HPCP))+.5
+#scale precipitation to fit on the 
+hydroP$pscale <- (((yh-yl)/(pm-pl)) * hydroP$HPCP) + yl
+
+
+
+# make plot 
+par(mai=c(1,1,1,1))
+
+plot(hydroD$decDay,
+     hydroD$discharge, 
+     type="l", 
+     ylim=c(yl,yh), 
+     lwd=2,
+     xlab="Day of year", 
+     ylab=expression(paste("Discharge ft"^"3 ","sec"^"-1")),
+     main = "Sept 5-6, 2011")
+#add bars to indicate precipitation 
+for(i in 1:nrow(hydroP)){
+  polygon(c(hydroP$decDay[i]-0.017,hydroP$decDay[i]-0.017,
+            hydroP$decDay[i]+0.017,hydroP$decDay[i]+0.017),
+          c(yl,hydroP$pscale[i],hydroP$pscale[i],yl),
+          col=rgb(0.392, 0.584, 0.929,.2), border=NA)
+}
+
+
+
+
+
+
+#################################################################################################################################
+
+
+
+# Question 8 code
+
+
+# choose winter day --- end of the year (January is definitely winter)
+
+
+#subsest discharge and precipitation within range of interest
+hydroD2 <- datD[datD$doy >= 7 & datD$doy < 9 & datD$year == 2009,]
+hydroP2 <- datP[datP$doy >= 7 & datP$doy < 9 & datP$year == 2009,]
+
+
+
+#min value of flow of stream
+min(hydroD2$discharge) #9.08
+
+
+#create scaled precipitation values for the period. Similar to above
+
+yl2 <- floor(min(hydroD2$discharge))-1
+yh2 <- ceiling(max(hydroD2$discharge))+1
+
+pl2 <- 0
+pm2 <-  ceiling(max(hydroP2$HPCP))+.5
+#scale precipitation to fit on the 
+hydroP2$pscale <- (((yh2-yl2)/(pm2-pl2)) * hydroP2$HPCP) + yl2
+
+
+#create second hyrdograph with overlaid precipitation polygons
+
+par(mai=c(1,1,1,1))
+plot(hydroD2$decDay,
+     hydroD2$discharge, 
+     type="l", 
+     ylim=c(yl2,yh2), 
+     lwd=2,
+     xlab="Day of year", 
+     ylab=expression(paste("Discharge ft"^"3 ","sec"^"-1")),
+     main = "Jan 7-8, 2009")
+
+
+for(i in 1:nrow(hydroP2)){
+  polygon(c(hydroP2$decDay[i]-0.017,hydroP2$decDay[i]-0.017,
+            hydroP2$decDay[i]+0.017,hydroP2$decDay[i]+0.017),
+          c(yl2,hydroP2$pscale[i],hydroP2$pscale[i],yl),
+          col=rgb(0.392, 0.584, 0.929,.2), border=NA)
+}
+
+
+
+
+
+
+
+
+#################################################################################################################################
+
+
+#box plots & violin plots
+
+
+library(ggplot2)
+#specify year as a factor
+datD$yearPlot <- as.factor(datD$year)
+#make a boxplot
+ggplot(data= datD, aes(yearPlot,discharge)) + 
+  geom_boxplot()
+
+
+#make a violin plot
+ggplot(data= datD, aes(yearPlot,discharge)) + 
+  geom_violin()
+
+#These types of plots are very useful for thinking about the variation in data. 
+#However, with a dataset like streamflow where low values are common with 
+#large spikes in streamflow occuring infrequently they can be harder to visualize.
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
