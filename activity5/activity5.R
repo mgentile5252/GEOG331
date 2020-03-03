@@ -508,11 +508,78 @@ ggplot(data= datD, aes(yearPlot,discharge)) +
 
 
 
+#################################################################################################################################
+
+# question 9 code #
+
+
+leap_year(2016) #TRUE
+leap_year(2017) #FALSE
+
+
+# 2016: 3/20 doy 80, 6/20 doy 172, 9/22 doy 266, 12/21 doy 355
+# 2017: 3/20 doy 79 , 6/21 doy 172, 9/22 doy 265. 12/21 doy 354
+
+
+
+# 2016 first
+datD_2016 <- datD[datD$year == 2016,]
+
+
+
+#add column that says which season the data falls under. Based on dates listsed above
+datD_2016$season <- ifelse(datD_2016$doy < 81, "winter", 
+                           ifelse(datD_2016$doy < 173, "spring",
+                                  ifelse(datD_2016$doy < 267, "summer",
+                                         ifelse(datD_2016$doy < 356, "fall", "winter"))))
+
+
+head(datD_2016)
+
+datD_2016$seasonPlot <- as.factor(datD_2016$season)
+
+#make violin plot
+ggplot(data= datD_2016, aes(seasonPlot,discharge)) + 
+  geom_violin(fill= "blue") +
+  xlab("Seasons") +
+  ggtitle("2016 Season Violin Plot")+
+  theme(
+    panel.background = element_rect(fill = "lightblue",
+                                    colour = "lightblue",
+                                    size = 0.5, linetype = "solid"))
+   
+
+
+# now 2017
+datD_2017
 
 
 
 
 
+datD_2017$season <- ifelse(datD_2017$doy < 80, "winter", 
+                           ifelse(datD_2017$doy < 173, "spring",
+                                  ifelse(datD_2017$doy < 266, "summer",
+                                         ifelse(datD_2017$doy < 355, "fall", "winter"))))
+
+
+
+
+
+
+head(datD_2017)
+
+datD_2017$seasonPlot <- as.factor(datD_2017$season)
+
+#make violin plot
+ggplot(data= datD_2017, aes(seasonPlot,discharge)) + 
+  geom_violin(fill= "blue") +
+  xlab("Seasons") +
+  ggtitle("2017 Season Violin Plot")+
+  theme(
+    panel.background = element_rect(fill = "lightblue",
+                                    colour = "lightblue",
+                                    size = 0.5, linetype = "solid"))
 
 
 
