@@ -85,6 +85,8 @@ plot(datD$decYear, datD$discharge, type="l", xlab="Year", ylab=expression(paste(
 
 # question 3 code #
 
+#find number of observations and frequency at which they were collected (look at time stamps)
+
 nrow(datD) #393798
 head(datD)
 datD$date[1] #10/1/2007
@@ -257,8 +259,13 @@ head(datD)
 colnames(datD)
 discharge_2017 <- datD[datD$year == 2017,6]
 
+#get only 2017 data
 datD_2017 <- datD[datD$year == 2017,]
 daily_discharge_2017 <- aggregate(datD_2017$discharge, by=list(datD_2017$doy), FUN="mean")
+
+
+
+#more plotting 
 
 dev.new(width=8,height=8)
 #bigger margins
@@ -277,15 +284,17 @@ polygon(c(aveF$doy, rev(aveF$doy)),#x coordinates
         border=NA#no border
 )       
 lines(daily_discharge_2017$x, col = "red")
-#######################################################
 
-#month_strings <- c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov","Dec")
-#axis(1, at = 1 seq(0,11, by=1), #tick intervals
-    # lab=month_strings) #tick labels
-#######################################################
+#axis(1, seq(0,360, by=40), #tick intervals
+     #lab=seq(0,360, by=40)) #tick labels
+axis(1, seq(0,360, by =32),
+     lab = c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul","Aug","Sep","Oct","Nov","Dec"))
+
 axis(2, seq(0,80, by=20),
      seq(0,80, by=20),
      las = 2)#show ticks at 90 degree angle
+
+
 legend("topright", c("mean","1 standard deviation", "2017 Observations"), #legend items
        lwd=c(2,NA),#lines
        col=c("black",rgb(0.392, 0.584, 0.929,.2), "red"),#colors
@@ -550,7 +559,7 @@ ggplot(data= datD_2016, aes(seasonPlot,discharge)) +
    
 
 
-# now 2017
+# now 2017, same process
 datD_2017
 
 
