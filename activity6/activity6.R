@@ -200,6 +200,10 @@ nrow(gAllp1)
 gAllp2 <- join(gAllp1,g2005p@data, by="GLACNAME", type="full")
 nrow(gAllp2)
 nrow(g2015p@data)
+
+#names in 2015 data frame of 2 glaciers are different. Need to be same for later join() call.
+g2015p@data$GLACNAME <- levels(g1966p@data$GLACNAME)
+      
 gAll <- join(gAllp2,g2015p@data, by="GLACNAME", type="full")
 nrow(gAll)
 
@@ -234,23 +238,27 @@ for(i in 2:39){
 
 # Question 5 code
 #gAll_new <- head(gAll,-2)
-gAll_new <- gAll[!((gAll$GLACNAME == "Miche Wabun Glacier") | (gAll$GLACNAME == "N. Swiftcurrent Glacier")),  ]
+#gAll_new <- gAll[!((gAll$GLACNAME == "Miche Wabun") | (gAll$GLACNAME == "North Swiftcurrent Glacier")),  ]
 
-gAll_new$area_change <- ((gAll_new$a1966m.sq - gAll_new$a2015m.sq)/gAll_new$a1966m.sq)*100
-area_change_df <- as.data.frame(gAll_new$GLACNAME)
-area_change_df$percent_change <- gAll_new$area_change
+gAll$area_change <- ((gAll$a1966m.sq - gAll$a2015m.sq)/gAll$a1966m.sq)*100
+area_change_df <- as.data.frame(gAll$GLACNAME)
+area_change_df$percent_change <- gAll$area_change
 colnames(area_change_df) <- c("GLACNAME", "percent_change")
 
-g2015_new <- g2015
-g2015_new@data <- join(g2015@data,area_change_df, by = "GLACNAME", type = "full")
+g2015p_new <- g2015p
+g2015p_new@data <- join(g2015p@data,area_change_df, by = "GLACNAME", type = "full")
 
 nrow(area_change_df)
-nrow(g2015@data)
-nrow(g2015_new@data)
+nrow(g2015p@data)
+nrow(g2015p_new@data)
 #g2015_new@data <- g2015_new@data[:-2]
 
 
-spplot(g2015_new, "percent_change")
+
+
+
+
+spplot(g2015p_new, "percent_change")
 
 
 
@@ -258,10 +266,70 @@ spplot(g2015_new, "percent_change")
 
 #######################################################################################################
 
-#commented out because of gDifference function
+#commented out because of gDifference function --- diffPoly not defined
 
 #diffPoly <- gDifference(g1966p, g2015p)
 #plot(diffPoly)
+
+
+#plot with NDVI
+
+#plot(NDVIraster[[13]], axes=FALSE, box=FALSE)
+#plot(diffPoly,col="black", border=NA,add=TRUE)
+
+
+
+
+
+#######################################################################################################
+
+
+
+# Question 6 code
+
+area_change_df$GLACNAME[area_change_df$percent_change == max(area_change_df$percent_change)]
+#Boulder Glacier --- glacier with max percent change in area from 1966 - 2015
+
+
+boulder_1966 <- subset(g1966p, GLACNAME == "Boulder Glacier")
+boulder_1998 <- subset(g1998p, GLACNAME == "Boulder Glacier")
+boulder_2005 <- subset(g2005p, GLACNAME == "Boulder Glacier")
+boulder_2015 <- subset(g2015p, GLACNAME == "Boulder Glacier")
+
+plot(boulder_1966)
+plot(boulder_1998,border = "red", add = TRUE)
+plot(boulder_2005,border = "blue", add = TRUE)
+plot(boulder_2015,border = "green", add = TRUE)
+
+title("Extent of Boulder Glacier 1966 - 2015")
+legend("bottomleft", legend= c("1966","1998", "2005", "2015"),
+       col=c("black","blue","red","green"), lty=1)
+
+
+
+
+
+#######################################################################################################
+
+
+#extract NDVI values
+NDVIdiff <- list()
+meanDiff <- numeric(0)
+#loop through all NDVI years and use extract function
+for(i in 1:length(ndviYear)){
+      #get raster values in the difference polygon
+      NDVIdiff[[i]] <- extract(NDVIraster[[i]],diffPoly)[[1]]
+      #calculate the mean of the NDVI values
+      meanDiff[i] <- mean(NDVIdiff[[i]], na.rm=TRUE)
+}
+
+plot(ndviYear, meanDiff, type="b",
+     xlab= "Year",
+     ylab="Average NDVI (unitless)",
+     pch=19)
+
+
+
 
 
 
