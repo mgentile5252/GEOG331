@@ -311,31 +311,91 @@ legend("bottomleft", legend= c("1966","1998", "2005", "2015"),
 
 #######################################################################################################
 
+## COMMENTED OUT BECAUSE diffPoly not defined
 
 #extract NDVI values
-NDVIdiff <- list()
-meanDiff <- numeric(0)
+#NDVIdiff <- list()
+#meanDiff <- numeric(0)
 #loop through all NDVI years and use extract function
-for(i in 1:length(ndviYear)){
+#for(i in 1:length(ndviYear)){
       #get raster values in the difference polygon
-      NDVIdiff[[i]] <- extract(NDVIraster[[i]],diffPoly)[[1]]
+ #     NDVIdiff[[i]] <- extract(NDVIraster[[i]],diffPoly)[[1]]
       #calculate the mean of the NDVI values
-      meanDiff[i] <- mean(NDVIdiff[[i]], na.rm=TRUE)
-}
+  #    meanDiff[i] <- mean(NDVIdiff[[i]], na.rm=TRUE)
+#}
 
-plot(ndviYear, meanDiff, type="b",
-     xlab= "Year",
-     ylab="Average NDVI (unitless)",
-     pch=19)
-
-
+#plot(ndviYear, meanDiff, type="b",
+ #    xlab= "Year",
+ #    ylab="Average NDVI (unitless)",
+ #    pch=19)
 
 
+# notes from plot:
+# no trend, NDVI high in 2015, 
+# may take many years for vegetation to move in and fill in a newly bare glacial area
+# may also be prolonged snow cover in many of these areas
+
+
+
+#designate that NDVIraster list is a stack
+NDVIstack <- stack(NDVIraster)
+#set up lm function to apply to every cell
+#where x is the value of a cell
+#need to first skip NA values (like lakes)
+#if NA is missing in first raster, it is missing in all
+#so we can tell R to assign an NA rather than fitting the function
+timeT <- ndviYear
+fun <- function(x) {
+      if(is.na(x[1])){
+            NA}else{
+                  #fit a regression and extract a slope
+                  lm(x ~ timeT)$coefficients[2] }}
+#apply the slope function to the rasters
+NDVIfit <- calc(NDVIstack,fun)
+#plot the change in NDVI
+plot(NDVIfit, axes=FALSE) ### USE TO ANSWER QUESTION 7
+
+
+
+
+#buffer glaciers
+glacier500m <- gBuffer(g1966p,#data to buffer
+                       byid=TRUE,#keeps original shape id 
+                       width=500)#width in coordinate system units
+
+
+
+#zonal statistics
+#convert to a raster
+buffRaster <- rasterize(glacier500m,#vector to convert to raster
+                        NDVIraster[[1]], #raster to match cells and extent
+                        field=glacier500m@data$GLACNAME, #field to convert to raster data
+                        background=0)#background value for missing data
+plot(buffRaster)
+
+
+#remove the actual glacier from our statistics
+# Since the IDs will be the same, we can subtract the two rasters 
+# to end up with an id for only in areas with the buffer
+
+#rasterize gralciers
+glacRaster <- rasterize(g1966p, NDVIraster[[1]], field=g1966p@data$GLACNAME, background=0)
+#subtract buffer from original glacier
+glacZones <- buffRaster - glacRaster
+plot(glacZones)
 
 
 
 
 
+
+#get the statistics for the rate of vegetation change in the area around the rasterized buffer
+
+
+meanChange <- zonal(NDVIfit, #NDVI function to summarize
+                    glacZones,#raster with zones
+                    "mean")#function to apply
+head(meanChange)
 
 
 
