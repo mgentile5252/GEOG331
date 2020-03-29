@@ -382,7 +382,7 @@ plot(buffRaster)
 glacRaster <- rasterize(g1966p, NDVIraster[[1]], field=g1966p@data$GLACNAME, background=0)
 #subtract buffer from original glacier
 glacZones <- buffRaster - glacRaster
-plot(glacZones)
+plot(glacZones) ### USE FOR QUESTION 8
 
 
 
@@ -396,6 +396,54 @@ meanChange <- zonal(NDVIfit, #NDVI function to summarize
                     glacZones,#raster with zones
                     "mean")#function to apply
 head(meanChange)
+
+
+
+
+
+#######################################################################################################
+
+
+
+# Question 9 code
+
+
+plot(g2015p)
+nrow(meanChange)
+
+mean
+
+g2015p_new2 <- g2015p_new
+g2015p_new2@data$mean_ndvi_change <- meanChange[2:40,2]
+
+
+spplot(g2015p_new2, "mean_ndvi_change")
+
+
+
+
+
+#######################################################################################################
+
+
+
+# Question 10 code
+
+# look at avg (linear) annual NDVI changes in area from 2003-2015. 
+# total change in NDVI over the period = avg annual x length of period
+
+# max NDVI on scale frmo 0-1
+
+g2015p_new2@data$total_change <- g2015p_new2@data$mean_ndvi_change * 12
+
+g2015p_new2@data$total_change
+max(g2015p_new2@data$total_change) #0.05632875
+
+
+
+
+#######################################################################################################
+
 
 
 
