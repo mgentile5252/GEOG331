@@ -19,7 +19,7 @@ library(nnet)
 # file path on personal computer
 #/Users/matthewgentile/Documents/GitHub/GEOG331/oneida/sentinel/T18TVN_20190814T154911_B02_20m.tif 
 
-dirR <- "/Users/matthewgentile/Documents/GitHub/GEOG331/oneida/"
+dirR <- "/Users/matthewgentile/Desktop/oneida/"
 #read in Sentinel data
 
 rdatB2 <- raster(paste0(dirR,"/sentinel/T18TVN_20190814T154911_B02_20m.tif"))
