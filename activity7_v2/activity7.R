@@ -187,14 +187,176 @@ validD <- dataAll[dataAll$sampleType == "valid",]
 ### RANDOM FOREST CLASSIFIER ###
 
 
+#Kfold cross validation
+tc <- trainControl(method = "repeatedcv", # repeated cross-validation of the training data
+                   number = 10, # number 10 fold
+                   repeats = 10) # number of repeats
+###random forests
+#Typically square root of number of variables
+rf.grid <- expand.grid(mtry=1:sqrt(9)) # number of variables available for splitting at each tree node
+
+
+# Train the random forest model to the Sentinel-2 data
+#note that caret:: will make sure we use train from the caret package
+rf_model <- caret::train(x = trainD[,c(5:13)], #digital number data
+                         y = as.factor(trainD$landcID), #land class we want to predict
+                         method = "rf", #use random forest
+                         metric="Accuracy", #assess by accuracy
+                         trainControl = tc, #use parameter tuning method
+                         tuneGrid = rf.grid) #parameter tuning grid
+#check output
+rf_model
+
+
+
+# Change name in raster stack to match training data
+names(allbandsCloudf) <- c("B2","B3","B4","B5","B6","B7","B8","B11","B12")
+# Apply the random forest model to the Sentinel-2 data
+rf_prediction <- raster::predict(allbandsCloudf, model=rf_model)
+#view predictions
+plot(rf_prediction)
 
 
 
 
+# find class names
+landclass
+
+
+#set up categorical colors
+landclass$cols <-c("#a6d854","#8da0cb","#66c2a5",
+                   "#fc8d62","#ffffb3","#ffd92f")
+#make plot and hide legend
+plot(rf_prediction,
+     breaks=seq(0,6), 
+     col=landclass$cols ,
+     legend=FALSE, axes=FALSE)
+legend("bottomleft", paste(landclass$landcover),
+       fill=landclass$cols ,bty="n")   
+
+
+
+# evaluate predictions with vaidaton data
+
+#get validation data from raster by extracting 
+#cell values at the cell coordinates
+rf_Eval <- extract(rf_prediction, validD[,3:4])
+
+
+#make the confusion matrix
+rf_errorM <- confusionMatrix(as.factor(rf_Eval),as.factor(validD$landcID))
+#add landcover names
+colnames(rf_errorM$table) <- landclass$landcover
+rownames(rf_errorM$table) <- landclass$landcover
+#view the matrix
+rf_errorM$table
+
+
+
+# overall accuracy
+rf_errorM$overall
+
+################################################################################################################
+### Neural Network ###
+
+#set up grid
+#set up grid
+nnet.grid <- expand.grid(size = seq(from = 16, to = 28, by = 2), # number of neurons units in the hidden layer 
+                         decay = seq(from = 0.1, to = 0.6, by = 0.1)) # regularization parameter to avoid over-fitting 
+
+nnet_model <- caret::train(x = trainD[,c(5:13)], y = as.factor(trainD$landcID),
+                           method = "nnet", metric="Accuracy", trainControl = tc, tuneGrid = nnet.grid,
+                           trace=FALSE)
+nnet_model
+
+
+
+# Apply the neural network model to the Sentinel-2 data
+nnet_prediction <- raster::predict(allbandsCloudf, model=nnet_model)
+
+#make plot and hide legend
+plot(nnet_prediction,
+     breaks=seq(0,6), 
+     col=landclass$cols ,
+     legend=FALSE)
+legend("bottomleft", paste(landclass$landcover),
+       fill=landclass$cols ,bty="n")
+
+
+#extract predictions
+nn_Eval = extract(nnet_prediction, validD[,3:4])
+#confusion matrix
+nn_errorM = confusionMatrix(as.factor(nn_Eval),as.factor(validD$landcID))
+colnames(nn_errorM$table) <- landclass$landcover
+rownames(nn_errorM$table) <- landclass$landcover
+nn_errorM$table
+
+
+nn_errorM$overall
+
+#the neural network does not predict the agriculture very well
+
+
+### COMPARE MAPS OF PREDICTIONS ###
+
+par(mfrow=c(2,1), mai=c(0,0,0,0))
+#random forest
+plot(rf_prediction,
+     breaks=seq(0,6), 
+     col=landclass$cols ,
+     legend=FALSE)
+#legend
+legend("bottomleft", paste(landclass$landcover),
+       fill=landclass$cols ,bty="n")
+#add title
+mtext("Random Forest", side=3,cex=2, line=-5)
+
+#neural network
+plot(nnet_prediction,
+     breaks=seq(0,6), 
+     col=landclass$cols ,
+     legend=FALSE, axes=FALSE)
+#add legend
+legend("bottomleft", paste(landclass$landcover),
+       fill=landclass$cols, bty="n")   
+#add title
+mtext("Neural network", side=3,cex=2, line=-5)
+
+
+### Analyze Predictions ###
+
+#cell count neural net
+freq(nnet_prediction)
+
+
+#cell count random forest
+freq(rf_prediction)
+
+####################################################################################
+
+### QUESTION 4 CODE ###
+landclass$landcover # algal bloom is first value
+
+nnet_algal <- freq(nnet_prediction)[1,2]
+rf_algal <- freq(rf_prediction)[1,2]
+
+nnet_algal_area <- nnet_algal * (20*20)
+# 143344400 
+
+rf_algal_area <- rf_algal * (20*20)
+# 97480800
+
+diff <- nnet_algal_area - rf_algal_area
+# 45863600 greater with nnet model
+
+####################################################################################
 
 
 
 
+####################################################################################
+
+### QUESTION 5 ###
 
 
 
