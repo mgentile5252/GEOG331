@@ -358,5 +358,49 @@ diff <- nnet_algal_area - rf_algal_area
 
 ### QUESTION 5 ###
 
+#diff_raster <- rf_prediction - nnet_prediction
+
+#diff_vec <- rf_prediction[landclass == "algal bloom"] - nnet_prediction[landclass == "algal bloom"]
+#diff_raster <- rasterize(diff_vec)
+
+
+# must isolate the raster data for only area where algal blooms are predicted
+
+
+
+####################################################################################
+
+
+
+
+####################################################################################
+
+### QUESTION 6 ###
+class(nn_errorM$table)
+
+nn_table <- nn_errorM$table
+rf_table <- rf_errorM$table
+
+
+prod_algal_nn <- 60/60
+prod_algal_rf <- 60/60
+      
+users_algal_nn <- 60/61
+users_algal_rf <- 60/61
+
+
+
+      
+prod_agr_nn <- 34/(34+8+15+3)
+prod_agr_rf <- 50/60
+      
+users_agr_nn <- 34/42
+users_agr_rf <- 50/53
+
+  
+
+
+
+
 
 
